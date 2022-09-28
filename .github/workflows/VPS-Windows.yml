@@ -1,4 +1,4 @@
-name: VPSwindows-LK
+name: VPS-Windows
 
 on: [workflow_dispatch, push]
 
