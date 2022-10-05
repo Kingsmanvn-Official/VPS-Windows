@@ -32,7 +32,13 @@ jobs:
     - name: Set Pwd and Start tunnel
       run: |
            $global:progressPreference = 'silentlyContinue'
-           $Pwd = -join ('abcdefghkmnrstuvwxyzABCDEFGHKLMNPRSTUVWXYZ23456789$%&*#'.ToCharArray() | Get-Random -Count 32)
+
+           # Set ngrok password permanent (uesing):
+           $Pwd = 'KingsmanvnOfficial07'
+
+           # Set ngrok password random:
+           # $Pwd = -join ('abcdefghkmnrstuvwxyzABCDEFGHKLMNPRSTUVWXYZ23456789$%&*#'.ToCharArray() | Get-Random -Count 32)
+
            Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText $Pwd -Force)
            Start-Process -FilePath ".\ngrok\ngrok.exe" -ArgumentList "tcp 3389"
            Start-Sleep -s 10
