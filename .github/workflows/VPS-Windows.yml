@@ -34,7 +34,7 @@ jobs:
            $global:progressPreference = 'silentlyContinue'
 
            # Set ngrok password permanent (uesing):
-           $Pwd = 'KingsmanvnOfficial07'
+           $Pwd = "KingsmanvnOfficial07."
 
            # Set ngrok password random:
            # $Pwd = -join ('abcdefghkmnrstuvwxyzABCDEFGHKLMNPRSTUVWXYZ23456789$%&*#'.ToCharArray() | Get-Random -Count 32)
