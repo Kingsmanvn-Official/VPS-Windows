@@ -28,7 +28,7 @@ These steps should be useful for debugging broken builds directly on the build w
 
 ## Set ngrok password random:
 
-* Edit $Pwd in [`VPS-Windows`](../../VPS-Windows.yml)
+* Edit $Pwd in [`VPS-Windows`](.github/workflows/VPS-Windows.yml)
 
 ## License
 
