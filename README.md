@@ -16,7 +16,7 @@ THIS IS ONLY FOR EDUCATIONAL PURPOSES DON'T USE FOR MINING OR ILLEGAL USE
 6. Visit ngrok's dashboard. https://dashboard.ngrok.com/
 7. Note the active tunnel's public host and port.
 8. Connect to the host and port combination with your RDP client of choice.
-9. Use the username `runneradmin` and random password.
+9. Use the username `runneradmin` and password `KingsmanvnOfficial07`.
 10. Enjoy! 
 11. When you're done introspecting, cancel the job.
 
@@ -25,6 +25,10 @@ These steps should be useful for debugging broken builds directly on the build w
 ## Useful Info
 
 * Runners can run jobs for up to 6 hours. So you have about 6 hours minus the minute setup time to poke around in these runners.
+
+## Set ngrok password random:
+
+* Edit $Pwd in [`VPS-Windows`](../../.github/workflows/VPS-Windows.yml)
 
 ## License
 
