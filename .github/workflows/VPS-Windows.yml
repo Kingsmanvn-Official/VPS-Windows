@@ -9,28 +9,29 @@ jobs:
     timeout-minutes: 9999
 
     steps:
-    - name: Package Manager
-      run: |
+      - name: Package Manager
+        run: |
            $global:progressPreference = 'silentlyContinue'
            Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex
     
-    - name: Ngrok
-      run: |
+      - name: Ngrok
+        run: |
            $global:progressPreference = 'silentlyContinue'
            Invoke-WebRequest https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip -OutFile ngrok.zip
            Expand-Archive ngrok.zip
            .\ngrok\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
-      env:
-        NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
+        env:
+          NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
         
-    - name: Enable Remote Desktop
-      run: |
+      - name: Enable Remote Desktop
+        run: |
            $global:progressPreference = 'silentlyContinue'
            Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
            Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
            Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
-    - name: Set Pwd and Start tunnel
-      run: |
+
+      - name: Set Pwd and Start tunnel
+        run: |
            $global:progressPreference = 'silentlyContinue'
 
            # Set ngrok password permanent (uesing):
@@ -52,7 +53,17 @@ jobs:
            echo "Fulladress: $Fulladdress"
            echo "User: runneradmin"
            echo "Pwd: $Pwd"
-    - name: Set Timeout 6 hours
-      run: |
+
+      - name: Set Timeout 6 hours
+        run: |
            $global:progressPreference = 'silentlyContinue'
            Start-Sleep -s 21600
+
+
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 0
+          keep_minimum_runs: 0
