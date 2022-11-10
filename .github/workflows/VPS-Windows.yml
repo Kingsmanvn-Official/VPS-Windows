@@ -24,7 +24,7 @@ jobs:
         run: .\ngrok\ngrok.exe tcp 3389
 
   Del-run:
-    need: Starting-Windows
+    needs: Starting-Windows
     runs-on: ubuntu-latest
     steps:
       - name: Delete workflow runs
