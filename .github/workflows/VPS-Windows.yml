@@ -3,7 +3,7 @@ name: VPS-Windows
 on: [workflow_dispatch, push]
 
 jobs:
-  Starting:
+  Starting-Windows:
     runs-on: windows-latest
     timeout-minutes: 9999
     steps:
@@ -20,11 +20,11 @@ jobs:
       - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
       - run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 5
       - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "VpsWinserv228666." -Force)
-    - name: Start Tunnel
-      run: .\ngrok\ngrok.exe tcp 3389
+      - name: Start Tunnel
+        run: .\ngrok\ngrok.exe tcp 3389
 
   Del-run:
-    needs: Starting
+    needs: Starting-Windows
     runs-on: ubuntu-latest
     steps:
       - name: Delete workflow runs
