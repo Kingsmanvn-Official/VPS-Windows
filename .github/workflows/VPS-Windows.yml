@@ -3,7 +3,7 @@ name: VPS-Windows
 on: [workflow_dispatch, push]
 
 jobs:
-  Starting-Windows:
+  Starting:
     runs-on: windows-latest
     timeout-minutes: 9999
     steps:
@@ -24,7 +24,7 @@ jobs:
       run: .\ngrok\ngrok.exe tcp 3389
 
   Del-run:
-    needs: Starting-Windows
+    needs: Starting
     runs-on: ubuntu-latest
     steps:
       - name: Delete workflow runs
