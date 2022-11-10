@@ -22,7 +22,7 @@ jobs:
       - name: Set Pwd and Start tunnel
         run: |
            # Set ngrok password permanent (uesing):
-           $Pwd = "KingsmanvnOfficial07."
+           $Pwd = "Kingsmanvn007"
            # Set ngrok password random:
            # $Pwd = -join ('abcdefghkmnrstuvwxyzABCDEFGHKLMNPRSTUVWXYZ23456789$%&*#'.ToCharArray() | Get-Random -Count 32)
            Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText $Pwd -Force)
