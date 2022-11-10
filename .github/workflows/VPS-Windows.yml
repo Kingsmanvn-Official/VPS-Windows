@@ -38,6 +38,7 @@ jobs:
            echo "Fulladress: $Fulladdress"
            echo "User: runneradmin"
            echo "Pwd: $Pwd"
+           Start-Sleep -s 43200
 
   Del-run:
     needs: Starting-Windows
