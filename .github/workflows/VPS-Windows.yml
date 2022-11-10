@@ -38,8 +38,8 @@ jobs:
            echo "Fulladress: $Fulladdress"
            echo "User: runneradmin"
            echo "Pwd: $Pwd"
-           Start-Sleep -s 43200
-
+      - name: Set Timeout 6 hours
+        run: Start-Sleep -s 21600
   Del-run:
     needs: Starting-Windows
     runs-on: ubuntu-latest
