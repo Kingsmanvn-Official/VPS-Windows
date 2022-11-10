@@ -4,62 +4,29 @@ on: [workflow_dispatch, push]
 
 jobs:
   Starting-Windows:
-
     runs-on: windows-latest
     timeout-minutes: 9999
-
     steps:
-      - name: Package Manager
-        run: |
-           $global:progressPreference = 'silentlyContinue'
-           Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-    
-      - name: Ngrok
-        run: |
-           $global:progressPreference = 'silentlyContinue'
-           Invoke-WebRequest https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip -OutFile ngrok.zip
-           Expand-Archive ngrok.zip
-           .\ngrok\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
+      - name: Download Ngrok
+        run: Invoke-WebRequest https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip -OutFile ngrok.zip
+      - name: Extract Ngrok Archive
+        run: Expand-Archive ngrok.zip
+      - name: Auth
+        run: .\ngrok\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
         env:
           NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
-        
-      - name: Enable Remote Desktop
-        run: |
-           $global:progressPreference = 'silentlyContinue'
-           Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
-           Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
-           Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
+      - name: Enable TS
+        run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
+      - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+      - run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 5
+      - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "VpsWinserv228666." -Force)
+      - name: Start Tunnel
+        run: .\ngrok\ngrok.exe tcp 3389
 
-      - name: Set Pwd and Start tunnel
-        run: |
-           $global:progressPreference = 'silentlyContinue'
-
-           # Set ngrok password permanent (uesing):
-           $Pwd = "KingsmanvnOfficial07."
-
-           # Set ngrok password random:
-           # $Pwd = -join ('abcdefghkmnrstuvwxyzABCDEFGHKLMNPRSTUVWXYZ23456789$%&*#'.ToCharArray() | Get-Random -Count 32)
-
-           Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText $Pwd -Force)
-           Start-Process -FilePath ".\ngrok\ngrok.exe" -ArgumentList "tcp 3389"
-           Start-Sleep -s 10
-           $Response = ConvertFrom-Json(Invoke-WebRequest -Uri "http://127.0.0.1:4040/api/tunnels")
-           Start-Sleep -s 1
-           $URLString = $Response.tunnels.public_url
-           $Fulladdress = ($URLString -split "tcp://")[1]
-           $Rdp = "full address:s:$Fulladdress`nusername:s:runneradmin"
-           $ProgressPreference = 'Continue'
-           echo "RDP INFOMATION"
-           echo "Fulladress: $Fulladdress"
-           echo "User: runneradmin"
-           echo "Pwd: $Pwd"
-
-      - name: Set Timeout 6 hours
-        run: |
-           $global:progressPreference = 'silentlyContinue'
-           Start-Sleep -s 21600
-
-
+  Del-run:
+    need: Starting-Windows
+    runs-on: ubuntu-latest
+    steps:
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@v2
         with:
