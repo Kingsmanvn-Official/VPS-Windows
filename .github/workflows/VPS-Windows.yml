@@ -19,27 +19,10 @@ jobs:
         run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
       - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
       - run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 5
-      - name: Set Pwd and Start tunnel
-        run: |
-           # Set ngrok password permanent (uesing):
-           $Pwd = "Kingsmanvn007"
-           # Set ngrok password random:
-           # $Pwd = -join ('abcdefghkmnrstuvwxyzABCDEFGHKLMNPRSTUVWXYZ23456789$%&*#'.ToCharArray() | Get-Random -Count 32)
-           Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText $Pwd -Force)
-           Start-Process -FilePath ".\ngrok\ngrok.exe" -ArgumentList "tcp 3389"
-           Start-Sleep -s 10
-           $Response = ConvertFrom-Json(Invoke-WebRequest -Uri "http://127.0.0.1:4040/api/tunnels")
-           Start-Sleep -s 1
-           $URLString = $Response.tunnels.public_url
-           $Fulladdress = ($URLString -split "tcp://")[1]
-           $Rdp = "full address:s:$Fulladdress`nusername:s:runneradmin"
-           $ProgressPreference = 'Continue'
-           echo "RDP INFOMATION"
-           echo "Fulladress: $Fulladdress"
-           echo "User: runneradmin"
-           echo "Pwd: $Pwd"
-      - name: Set Timeout 6 hours
-        run: Start-Sleep -s 21600
+      - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "VpsWinserv228666." -Force)
+    - name: Start Tunnel
+      run: .\ngrok\ngrok.exe tcp 3389
+
   Del-run:
     needs: Starting-Windows
     runs-on: ubuntu-latest
